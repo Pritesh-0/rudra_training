@@ -32,8 +32,9 @@ while True:
             if key_press_times[key] is not None:
                 duration = time.time() - key_press_times[key]
                 if key=='w':
-                	while speed1<=127:
-                		speed1+=int(1000*duration % 156.666)
+                	print(duration*1000)
+                	if speed1<=127:
+                		speed1+=int((1000*duration) % 156.666)
                 print(speed1)	
                 key_press_times[key] = None
     time.sleep(0.01)
