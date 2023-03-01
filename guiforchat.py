@@ -1,31 +1,36 @@
 import tkinter as tk
 import serial
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser = serial.Serial('/dev/pts/0', 9600, timeout=1)
 root=tk.Tk()
 root.geometry("400x400")
-msg=tk.StringVar()
+
+#h1=tk.Label(root,text='Your Message')
+#h1.grid(row=0,column=0)
+send_box=tk.Entry(root,width=50)
+send_box.pack(pady=10)
+
 
 def send():
-	ans=msg.get()
-	ser.write(msg.get().encode() + b'\r\n')
-	msg.set("")
-	print(f"Sent: {ans}")
-	
+	msg=send_box.get()
+	ser.write(msg.encode())
+	send_box.delete(0,tk.END)
+	print(f"Sent: {msg}")
 
-h1=tk.Label(root,text='Your Message')
-e1=tk.Entry(root,textvariable=msg)
 btn=tk.Button(root,text='Send',command=send)
-rec = ser.readline().decode().rstrip()
-print(rec)
-h2=tk.Label(root,text=rec)
+btn.pack(pady=10)
 
-h1.grid(row=0,column=0)
-e1.grid(row=0,column=1)
-btn.grid(row=1,column=1)
-h2.grid(row=2,column=0)
+rcv_box=tk.Text(root,width=50,height=20)
+rcv_box.pack()
 
 
+def read():
+	msg=ser.readline().decode()
+	if msg:
+		rcv_box.insert(tk.END,msg + '\n')
+	
+	root.after(100,read)	
 
+read()
 
 root.mainloop()
 
